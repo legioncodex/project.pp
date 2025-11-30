@@ -54,7 +54,7 @@ def run_training_pipeline():
         ('regressor', Ridge()) # Initial placeholder
     ])
 
-    # Parameter grid for GridSearchCV to find the best regularized model. [Image of the machine learning pipeline steps]
+    # Parameter grid for GridSearchCV to find the best regularized model. [Image of machine learning pipeline components and workflow]
     param_grid = [
         {'regressor': [Ridge(random_state=RANDOM_STATE)],
          'regressor__alpha': np.logspace(-3, 3, 7)},
