@@ -3,4 +3,4 @@ pandas==2.1.0
 numpy==1.24.3
 scikit-learn==1.3.0
 plotly==5.17.0
-joblib==1.3.2  # Used for saving and loading the model pipeline
+joblib==1.3.2  # Critical for saving/loading the model
