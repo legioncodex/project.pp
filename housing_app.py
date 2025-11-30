@@ -1,11 +1,8 @@
-# full_housing_app.py
-
 import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib
 import os
-pip install -r requirements.txt
 from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.pipeline import Pipeline
@@ -27,6 +24,7 @@ def run_training_pipeline():
     st.info("Training pipeline started. This may take a moment...")
     
     # 2.1 GET DATA (California Housing)
+    # The Scikit-learn California Housing dataset is used for reproducibility.
     housing = fetch_california_housing(as_frame=True)
     df = housing.frame
     X = df.drop(TARGET_COL, axis=1)
@@ -37,7 +35,9 @@ def run_training_pipeline():
     # 2.2 PREPROCESSING PIPELINE
     NUMERIC_FEATURES = X.columns.tolist() 
     numeric_pipeline = Pipeline(steps=[
+        # Impute missing values with median
         ('imputer', SimpleImputer(strategy='median')), 
+        # Scale features to mean=0, std=1
         ('scaler', StandardScaler()) 
     ])
     preprocessor = ColumnTransformer(
@@ -48,11 +48,13 @@ def run_training_pipeline():
     )
 
     # 2.3 MODEL PIPELINE AND HYPERPARAMETER SEARCH
+    # We define the full pipeline including preprocessing and model placeholder.
     model_pipe = Pipeline(steps=[
         ('preprocessor', preprocessor),
-        ('regressor', Ridge()) 
+        ('regressor', Ridge()) # Initial placeholder
     ])
 
+    # Parameter grid for GridSearchCV to find the best regularized model. [Image of the machine learning pipeline steps]
     param_grid = [
         {'regressor': [Ridge(random_state=RANDOM_STATE)],
          'regressor__alpha': np.logspace(-3, 3, 7)},
@@ -63,6 +65,7 @@ def run_training_pipeline():
          'regressor__l1_ratio': [0.1, 0.5, 0.9]}
     ]
 
+    # GridSearchCV performs cross-validated search over the parameter grid
     grid_search = GridSearchCV(
         model_pipe,
         param_grid,
@@ -108,15 +111,16 @@ st.title("🏘️ Predictive Housing Market Dashboard")
 model_pipeline = load_predictor()
 
 if model_pipeline is None:
-    st.error(f"⚠️ Model file '{MODEL_FILENAME}' not found.")
+    # If model is missing, prompt user to train
+    st.error(f"⚠️ Model file '{MODEL_FILENAME}' not found. The model must be trained first.")
     st.info("Click the button below to train and save the model using the defined pipeline.")
     
     if st.button("Start Training Pipeline", type="primary"):
-        # The training function includes st.experimental_rerun() upon completion
+        # This function handles training and saves the model
         run_training_pipeline()
     st.stop() # Stop execution if model is not loaded
 
-# --- 5. DASHBOARD UI (The 'Different UI' part) ---
+# --- 5. DASHBOARD UI (Different UI structure using tabs and columns) ---
 
 st.markdown("Analyze property features and get instant predictions using the optimized machine learning model.")
 
