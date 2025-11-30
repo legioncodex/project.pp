@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import joblib
 import os
+pip install -r requirements.txt
 from sklearn.datasets import fetch_california_housing
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.pipeline import Pipeline
